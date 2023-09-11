@@ -5,6 +5,7 @@ image/*.JPG
 image/*.jpeg
 image/*.JPEG
 my-images/
+import-me.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
