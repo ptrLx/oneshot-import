@@ -5,7 +5,7 @@ Import images from the past into your [OneShot](https://github.com/ptrLx/OneShot
 ## Requirements
 
 * clone this repo
-* install Python3.11
+* install Python 3.11
 * install pipenv (`pip install pipenv --user`)
 * run `pipenv install` and `pipenv shell`
 * now run the script (`python3 src/main.py`)
