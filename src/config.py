@@ -8,11 +8,7 @@ A import-me.json file will be generated, which can be imported in the OneShot-Ap
 # Possible image extensions in lowercase
 image_extensions = (".jpg", ".jpeg", ".png")
 
-# Folder that contains the images
-folder_path = "image"
-
-export_file_name = "import-me.json"
-
+default_export_file_path = "import-me.json"
+default_image_path = "image"
 default_happiness = "NOT_SPECIFIED"
-
 default_text = "Imported by oneshot-import."

@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 from datereader import DateReader
-from config import folder_path
 
 
 def date_to_number(input_date):
@@ -11,10 +10,10 @@ def date_to_number(input_date):
     return days_since_reference
 
 
-def insert_image(file_name, images, counts):
+def insert_image(file_name, images, args, counts):
     logging.debug(f"Found image: {file_name}")
 
-    date = DateReader.read_metadata(f"{folder_path}/{file_name}")
+    date = DateReader.read_metadata(f"{args.get_path()}/{file_name}")
     if date:
         date_number = date_to_number(date)
         if date_number not in images:
