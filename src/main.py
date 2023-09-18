@@ -43,10 +43,10 @@ if __name__ == "__main__":
     print(disclaimer)
 
     if not args.get_confirmation():
-        answer = input("Start the generation now? [y/N] > ")
+        answer = input("Start the generation now? [y/N] > ").strip().lower()
         print()
 
-    if args.get_confirmation() or answer.lower() == "yes" or answer.lower() == "y":
+    if args.get_confirmation() or answer == "yes" or answer == "y":
         generate_json()
 
         if args.get_summarize():
