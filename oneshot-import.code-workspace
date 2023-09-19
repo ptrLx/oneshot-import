@@ -6,5 +6,12 @@
 	],
 	"settings": {
 		"editor.formatOnSave": true,
+		"cSpell.words": [
+			"datereader",
+			"exif",
+			"getexif",
+			"GPSTAGS",
+			"whatsapp"
+		],
 	}
 }

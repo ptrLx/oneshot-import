@@ -6,6 +6,7 @@ image/*.jpeg
 image/*.JPEG
 image-test/
 import-me.json
+tasks.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

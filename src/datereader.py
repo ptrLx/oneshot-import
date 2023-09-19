@@ -34,7 +34,8 @@ class DateReader:
     def read_android_filename(file_name):
         # Examples: IMG_20230901_203000.jpg, 20230901_203000.PNG
         pattern = re.compile(
-            r"^(IMG_)?(\d{4})(\d{2})(\d{2})_\d+\.(jpe?g|png)$", re.IGNORECASE
+            r"^(IMG_)?(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})\.(jpe?g|png)$",
+            re.IGNORECASE,
         )
         match = re.search(pattern, file_name)
 
@@ -42,7 +43,10 @@ class DateReader:
             year = int(match.group(2))
             month = int(match.group(3))
             day = int(match.group(4))
-            return datetime(year, month, day)
+            hour = int(match.group(5))
+            minute = int(match.group(6))
+            second = int(match.group(7))
+            return datetime(year, month, day, hour, minute, second)
 
         # Examples: 2023-09-01-20-30-00-000.jpg, 2023-09-01-20-30-00.PNG
         pattern = re.compile(
@@ -64,18 +68,57 @@ class DateReader:
 
     @staticmethod
     def read_ios_filename(file_name):
-        return None
         # 20230901_203000000_iOS.jpg
-        # todo
+        pattern = re.compile(
+            r"^(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})(\d{3})?_iOS\.(jpe?g|png)$",
+            re.IGNORECASE,
+        )
+        match = re.search(pattern, file_name)
+
+        if match:
+            year = int(match.group(1))
+            month = int(match.group(2))
+            day = int(match.group(3))
+            hour = int(match.group(4))
+            minute = int(match.group(5))
+            second = int(match.group(6))
+            return datetime(year, month, day, hour, minute, second)
+
+        return None
 
     @staticmethod
     def read_oneshot_filename(file_name):
-        return None
         # OneShot_20230901203000.jpg
-        # todo
+        pattern = re.compile(
+            r"^OneShot_(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})\.(jpe?g|png)$",
+            re.IGNORECASE,
+        )
+        match = re.search(pattern, file_name)
+
+        if match:
+            year = int(match.group(1))
+            month = int(match.group(2))
+            day = int(match.group(3))
+            hour = int(match.group(4))
+            minute = int(match.group(5))
+            second = int(match.group(6))
+            return datetime(year, month, day, hour, minute, second)
+
+        return None
 
     @staticmethod
     def read_whatsapp_filename(file_name):
-        return None
         # IMG-20230901-WA0007.jpg
-        # todo
+        pattern = re.compile(
+            r"^(IMG-)?(\d{4})(\d{2})(\d{2})-WA(\d{4})\.(jpe?g|png)$",
+            re.IGNORECASE,
+        )
+        match = re.search(pattern, file_name)
+
+        if match:
+            year = int(match.group(2))
+            month = int(match.group(3))
+            day = int(match.group(4))
+            return datetime(year, month, day)
+
+        return None

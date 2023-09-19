@@ -22,23 +22,29 @@ images = {}
 counts = Counter()
 
 
-def generate_json():
-    folder_path = args.get_path()
-    if os.path.exists(folder_path) and os.path.isdir(folder_path):
-        # 1. Fill the images dictionary
-        for _root, _dirs, files in os.walk(folder_path):
-            for file_name in files:
-                if file_name.lower().endswith(image_extensions):
-                    insert_image(file_name, images, args, counts)
+def generate_json(folder):
+    # 1. Fill the images dictionary
+    for _root, _dirs, files in os.walk(folder):
+        for file_name in files:
+            if file_name.lower().endswith(image_extensions):
+                insert_image(file_name, images, args, counts)
 
-        # 2. Generate the JSON export
-        generate_import_me(images, args)
-    else:
-        print(f"The folder '{folder_path}' does not exist.")
+    # 2. Generate the JSON export
+    generate_import_me(images, args)
 
 
 if __name__ == "__main__":
     args.parse()
+
+    folder_path = args.get_path()
+    if not (os.path.exists(folder_path) and os.path.isdir(folder_path)):
+        logging.error(f"The folder '{folder_path}' does not exist.")
+        exit(1)
+
+    export_path = os.path.dirname(args.get_export_file_location())
+    if not (os.path.exists(export_path) and os.path.isdir(export_path)):
+        logging.error(f"The folder '{folder_path}' does not exist.")
+        exit(1)
 
     print(disclaimer)
 
@@ -47,7 +53,7 @@ if __name__ == "__main__":
         print()
 
     if args.get_confirmation() or answer == "yes" or answer == "y":
-        generate_json()
+        generate_json(folder_path)
 
         if args.get_summarize():
             summarize(counts)
