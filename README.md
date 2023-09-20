@@ -21,3 +21,25 @@ Import images from the past into your [OneShot](https://github.com/ptrLx/OneShot
   <img alt="screenshot_1" src="assets/screenshot_1.jpg" width="30%">
   <img style="padding-left: 8px;" alt="screenshot_2" src="assets/screenshot_2.jpg" width="30%">
   </div>
+
+## Usage
+
+```
+usage: main.py [-h] [-y] [--summarize] [--no-summarize] [-p PATH] [-o OUTPUT] [--default-text DEFAULT_TEXT]
+               [--default-happiness {NOT_SPECIFIED,VERY_HAPPY,HAPPY,NEUTRAL,SAD,VERY_SAD}]
+
+Import images from the past into OneShot.
+
+options:
+  -h, --help            show this help message and exit
+  -y, --yes             no confirmation request
+  --summarize           summarize import results
+  --no-summarize        disable summarization
+  -p PATH, --path PATH  specify a path where the images are located
+  -o OUTPUT, --output OUTPUT
+                        specify a path where the export should be stored
+  --default-text DEFAULT_TEXT
+                        specify default text
+  --default-happiness {NOT_SPECIFIED,VERY_HAPPY,HAPPY,NEUTRAL,SAD,VERY_SAD}
+                        specify default happiness level
+```
