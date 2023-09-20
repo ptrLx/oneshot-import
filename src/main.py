@@ -5,6 +5,7 @@ from collections import Counter
 import logging
 from exporter import generate_import_me
 from inserter import insert_image
+from renamer import rename_images
 from config import disclaimer, image_extensions
 from args import ArgParser
 from summarizer import summarize
@@ -30,7 +31,9 @@ def generate_json(folder):
                 insert_image(file_name, images, args, counts)
 
     # 2. Generate the JSON export
-    generate_import_me(images, args)
+    if images:
+        rename_images(images, args)
+        generate_import_me(images, args)
 
 
 if __name__ == "__main__":
@@ -50,9 +53,9 @@ if __name__ == "__main__":
 
     if not args.get_confirmation():
         answer = input("Start the generation now? [y/N] > ").strip().lower()
-        print()
 
     if args.get_confirmation() or answer == "yes" or answer == "y":
+        print()
         generate_json(folder_path)
 
         if args.get_summarize():

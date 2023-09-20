@@ -17,7 +17,7 @@ def insert_image(file_name, images, args, counts):
     if date:
         date_number = date_to_number(date)
         if date_number not in images:
-            logging.info(f"Date {date} found for image {file_name} in metadata.")
+            logging.info(f"Date {date} found for image '{file_name}' in metadata.")
             images[date_number] = (date, file_name)
             counts["metadata"] += 1
         else:
@@ -33,7 +33,7 @@ def insert_image(file_name, images, args, counts):
         date_number = date_to_number(date)
         if date_number not in images:
             logging.info(
-                f"Date {date} found for image {file_name} in filename (Android naming schema)."
+                f"Date {date} found for image '{file_name}' in filename (Android naming schema)."
             )
             images[date_number] = (date, file_name)
             counts["android"] += 1
@@ -50,7 +50,7 @@ def insert_image(file_name, images, args, counts):
         date_number = date_to_number(date)
         if date_number not in images:
             logging.info(
-                f"Date {date} found for image {file_name} in filename (IOS naming schema)."
+                f"Date {date} found for image '{file_name}' in filename (IOS naming schema)."
             )
             images[date_number] = (date, file_name)
             counts["ios"] += 1
@@ -65,7 +65,7 @@ def insert_image(file_name, images, args, counts):
     date = DateReader.read_oneshot_filename(file_name)
     if date:
         logging.info(
-            f"Date {date} found for image {file_name} in filename (OneShot naming schema)."
+            f"Date {date} found for image '{file_name}' in filename (OneShot naming schema)."
         )
         date_number = date_to_number(date)
         if date_number not in images:
@@ -82,7 +82,7 @@ def insert_image(file_name, images, args, counts):
     date = DateReader.read_whatsapp_filename(file_name)
     if date:
         logging.info(
-            f"Date {date} found for image {file_name} in filename (WhatsApp naming schema)."
+            f"Date {date} found for image '{file_name}' in filename (WhatsApp naming schema)."
         )
         date_number = date_to_number(date)
         if date_number not in images:
