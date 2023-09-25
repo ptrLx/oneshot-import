@@ -9,7 +9,7 @@ class GenerationAbortedException(Exception):
 
 def generate_import_me(images, args):
     json_export = []
-    for date_number, (date, file_name) in images.items():
+    for date_number, (file_name, date, _) in images.items():
         json_entry = {
             "date": date_number,
             "created": int(date.timestamp()),

@@ -4,7 +4,7 @@ import os
 from collections import Counter
 import logging
 from exporter import generate_import_me, GenerationAbortedException
-from inserter import insert_if_oneshot, insert_if_not_oneshot
+from inserter import insert_image
 from renamer import rename_images, RenameAbortedException
 from config import disclaimer, image_extensions
 from args import ArgParser
@@ -14,30 +14,27 @@ logging.basicConfig(level=logging.INFO)
 
 args = ArgParser()
 
-# Dictionary of all found images with key as date_number and value as (datetime, filename)
-# Example: 19601: (2023-09-01-20-30-00, "IMG_20230901_203000.jpg")
+# Dictionary of all found images with key as date_number and value as (filename, date_time, datetime_read_from)
+# Example: 19601: ("IMG_20230901_203000.jpg", 2023-09-01-20-30-00, "metadata")
 images = {}
 
-# Counters for where the date was read from.
+# Counters for where the date was read from. This will be used after all images where read from folder.
 # Possible types: metadata, android, ios, oneshot, whatsapp, skipped, error
 counts = Counter()
 
 
 def generate_json(folder):
     # 1. Fill the images dictionary
-    # 1.1 Find all OneShots. OneShots are prioritized above other images.
     for _root, _dirs, files in os.walk(folder):
         for file_name in files:
             if file_name.lower().endswith(image_extensions):
-                insert_if_oneshot(file_name, images, args, counts)
+                insert_image(file_name, images, args, counts)
 
-    # 1.2 Find all non-OneShot images
-    for _root, _dirs, files in os.walk(folder):
-        for file_name in files:
-            if file_name.lower().endswith(image_extensions):
-                insert_if_not_oneshot(file_name, images, args, counts)
+    # 2. Count the found images
+    for date_number, (_, __, datetime_read_from) in images.items():
+        counts[datetime_read_from] += 1
 
-    # 2. Generate the JSON export
+    # 3. Generate the JSON export
     if images:
         try:
             rename_images(images, args)

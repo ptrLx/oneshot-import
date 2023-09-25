@@ -10,22 +10,35 @@ def date_to_number(input_date):
     return days_since_reference
 
 
-def is_oneshot(file_name):
-    date = DateReader.read_oneshot_filename(file_name)
-    return date != None
+def insert_image(file_name, images, args, counts):
+    logging.debug(f"Found image: {file_name}")
 
-
-def insert_if_oneshot(file_name, images, args, counts):
     date = DateReader.read_oneshot_filename(file_name)
-    if date:  # Image has the OneShot naming convention
+    if date:
         logging.debug(f"Found image: {file_name}")
         logging.info(
             f"Date {date} found for image '{file_name}' in filename (OneShot naming schema)."
         )
         date_number = date_to_number(date)
         if date_number not in images:
-            images[date_number] = (date, file_name)
-            counts["oneshot"] += 1
+            images[date_number] = (file_name, date, "oneshot")
+        else:
+            if images[date_number][2] == "oneshot":
+                date_only = datetime.strftime(date, "%Y-%m-%d")
+                logging.info(
+                    f"Skipping image {file_name}. There is already a entry at {date_only}."
+                )
+            else:
+                images[date_number] = (file_name, date, "oneshot")
+            counts["skipped"] += 1
+        return
+
+    date = DateReader.read_metadata(f"{args.get_path()}/{file_name}")
+    if date:
+        date_number = date_to_number(date)
+        if date_number not in images:
+            logging.info(f"Date {date} found for image '{file_name}' in metadata.")
+            images[date_number] = (file_name, date, "metadata")
         else:
             date_only = datetime.strftime(date, "%Y-%m-%d")
             logging.info(
@@ -34,76 +47,53 @@ def insert_if_oneshot(file_name, images, args, counts):
             counts["skipped"] += 1
         return
 
-
-def insert_if_not_oneshot(file_name, images, args, counts):
-    if not is_oneshot(file_name):  # Image has not the OneShot naming convention
-        logging.debug(f"Found image: {file_name}")
-
-        date = DateReader.read_metadata(f"{args.get_path()}/{file_name}")
-        if date:
-            date_number = date_to_number(date)
-            if date_number not in images:
-                logging.info(f"Date {date} found for image '{file_name}' in metadata.")
-                images[date_number] = (date, file_name)
-                counts["metadata"] += 1
-            else:
-                date_only = datetime.strftime(date, "%Y-%m-%d")
-                logging.info(
-                    f"Skipping image {file_name}. There is already a entry at {date_only}."
-                )
-                counts["skipped"] += 1
-            return
-
-        date = DateReader.read_android_filename(file_name)
-        if date:
-            date_number = date_to_number(date)
-            if date_number not in images:
-                logging.info(
-                    f"Date {date} found for image '{file_name}' in filename (Android naming schema)."
-                )
-                images[date_number] = (date, file_name)
-                counts["android"] += 1
-            else:
-                date_only = datetime.strftime(date, "%Y-%m-%d")
-                logging.info(
-                    f"Skipping image {file_name}. There is already a entry at {date_only}."
-                )
-                counts["skipped"] += 1
-            return
-
-        date = DateReader.read_ios_filename(file_name)
-        if date:
-            date_number = date_to_number(date)
-            if date_number not in images:
-                logging.info(
-                    f"Date {date} found for image '{file_name}' in filename (IOS naming schema)."
-                )
-                images[date_number] = (date, file_name)
-                counts["ios"] += 1
-            else:
-                date_only = datetime.strftime(date, "%Y-%m-%d")
-                logging.info(
-                    f"Skipping image {file_name}. There is already a entry at {date_only}."
-                )
-                counts["skipped"] += 1
-            return
-
-        date = DateReader.read_whatsapp_filename(file_name)
-        if date:
+    date = DateReader.read_android_filename(file_name)
+    if date:
+        date_number = date_to_number(date)
+        if date_number not in images:
             logging.info(
-                f"Date {date} found for image '{file_name}' in filename (WhatsApp naming schema)."
+                f"Date {date} found for image '{file_name}' in filename (Android naming schema)."
             )
-            date_number = date_to_number(date)
-            if date_number not in images:
-                images[date_number] = (date, file_name)
-                counts["whatsapp"] += 1
-            else:
-                date_only = datetime.strftime(date, "%Y-%m-%d")
-                logging.info(
-                    f"Skipping image {file_name}. There is already a entry at {date_only}."
-                )
-                counts["skipped"] += 1
-            return
+            images[date_number] = (file_name, date, "android")
+        else:
+            date_only = datetime.strftime(date, "%Y-%m-%d")
+            logging.info(
+                f"Skipping image {file_name}. There is already a entry at {date_only}."
+            )
+            counts["skipped"] += 1
+        return
 
-        logging.warning(f"Date of image {file_name} not readable.")
-        counts["error"] += 1
+    date = DateReader.read_ios_filename(file_name)
+    if date:
+        date_number = date_to_number(date)
+        if date_number not in images:
+            logging.info(
+                f"Date {date} found for image '{file_name}' in filename (IOS naming schema)."
+            )
+            images[date_number] = (file_name, date, "ios")
+        else:
+            date_only = datetime.strftime(date, "%Y-%m-%d")
+            logging.info(
+                f"Skipping image {file_name}. There is already a entry at {date_only}."
+            )
+            counts["skipped"] += 1
+        return
+
+    date = DateReader.read_whatsapp_filename(file_name)
+    if date:
+        logging.info(
+            f"Date {date} found for image '{file_name}' in filename (WhatsApp naming schema)."
+        )
+        date_number = date_to_number(date)
+        if date_number not in images:
+            images[date_number] = (file_name, date, "whatsapp")
+        else:
+            date_only = datetime.strftime(date, "%Y-%m-%d")
+            logging.info(
+                f"Skipping image {file_name}. There is already a entry at {date_only}."
+            )
+            counts["skipped"] += 1
+        return
+
+    logging.warning(f"Date of image {file_name} not readable.")
+    counts["error"] += 1

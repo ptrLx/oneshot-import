@@ -23,7 +23,7 @@ def rename_images(images, args):
         folder_path = args.get_path()
         updated_images = {}
 
-        for date_number, (date, file_name) in images.items():
+        for date_number, (file_name, date, datetime_read_from) in images.items():
             file_extension = os.path.splitext(file_name)[-1].lower()
             new_file_name = f"OneShot_{date.strftime('%Y%m%d%H%M%S')}{file_extension}"
 
@@ -32,7 +32,11 @@ def rename_images(images, args):
                     os.rename(
                         f"{folder_path}/{file_name}", f"{folder_path}/{new_file_name}"
                     )
-                    updated_images[date_number] = (date, new_file_name)
+                    updated_images[date_number] = (
+                        new_file_name,
+                        date,
+                        datetime_read_from,
+                    )
                     logging.info(f"Renamed '{file_name}' to '{new_file_name}'")
                 except OSError as e:
                     print(f"Failed to rename {file_name}: {e}")
