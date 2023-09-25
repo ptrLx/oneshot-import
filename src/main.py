@@ -3,9 +3,9 @@
 import os
 from collections import Counter
 import logging
-from exporter import generate_import_me
-from inserter import insert_image
-from renamer import rename_images
+from exporter import generate_import_me, GenerationAbortedException
+from inserter import insert_if_oneshot, insert_if_not_oneshot
+from renamer import rename_images, RenameAbortedException
 from config import disclaimer, image_extensions
 from args import ArgParser
 from summarizer import summarize
@@ -25,15 +25,29 @@ counts = Counter()
 
 def generate_json(folder):
     # 1. Fill the images dictionary
+    # 1.1 Find all OneShots. OneShots are prioritized above other images.
     for _root, _dirs, files in os.walk(folder):
         for file_name in files:
             if file_name.lower().endswith(image_extensions):
-                insert_image(file_name, images, args, counts)
+                insert_if_oneshot(file_name, images, args, counts)
+
+    # 1.2 Find all non-OneShot images
+    for _root, _dirs, files in os.walk(folder):
+        for file_name in files:
+            if file_name.lower().endswith(image_extensions):
+                insert_if_not_oneshot(file_name, images, args, counts)
 
     # 2. Generate the JSON export
     if images:
-        rename_images(images, args)
-        generate_import_me(images, args)
+        try:
+            rename_images(images, args)
+            generate_import_me(images, args)
+        except RenameAbortedException:
+            print(
+                "Images will not be renamed. Skipping generation of the 'import-me.json'."
+            )
+        except GenerationAbortedException:
+            print("Skipping generation of the 'import-me.json'.")
 
 
 if __name__ == "__main__":
@@ -44,9 +58,16 @@ if __name__ == "__main__":
         logging.error(f"The folder '{folder_path}' does not exist.")
         exit(1)
 
-    export_path = os.path.dirname(args.get_export_file_location())
-    if not (os.path.exists(export_path) and os.path.isdir(export_path)):
-        logging.error(f"The folder '{folder_path}' does not exist.")
+    export_file_location = args.get_export_file_location()
+    if os.path.exists(export_file_location) and not os.path.isfile(
+        export_file_location
+    ):
+        logging.error(f"'{export_file_location}' is not a file.")
+        exit(1)
+
+    export_path = os.path.dirname(export_file_location) or "."
+    if not os.path.exists(export_path):
+        logging.error(f"The folder '{export_path}' does not exist.")
         exit(1)
 
     print(disclaimer)

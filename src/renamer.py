@@ -2,11 +2,11 @@ import os
 import logging
 
 
+class RenameAbortedException(Exception):
+    pass
+
+
 def rename_images(images, args):
-    """
-    Rename images to the OneShot naming convention.
-    """
-    # todo docstring
     if not args.get_confirmation():
         answer = (
             input(
@@ -38,8 +38,6 @@ def rename_images(images, args):
                     print(f"Failed to rename {file_name}: {e}")
                     exit(1)
 
-        images.clear()
         images.update(updated_images)
     else:
-        print("Aborting.")
-        exit(0)
+        raise RenameAbortedException

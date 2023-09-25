@@ -12,7 +12,8 @@
 			"getexif",
 			"GPSTAGS",
 			"renamer",
-			"whatsapp"
+			"whatsapp",
+			"oneshot",
 		],
 	}
 }

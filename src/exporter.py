@@ -3,6 +3,10 @@ import os
 import logging
 
 
+class GenerationAbortedException(Exception):
+    pass
+
+
 def generate_import_me(images, args):
     json_export = []
     for date_number, (date, file_name) in images.items():
@@ -43,3 +47,5 @@ def write_import_me(json_export, args):
         with open(file_path, "w") as json_file:
             json.dump(json_export, json_file, indent=4)
             logging.info(f"Import file written to '{file_path}'")
+    else:
+        raise GenerationAbortedException

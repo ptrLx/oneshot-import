@@ -64,6 +64,19 @@ class DateReader:
             second = int(match.group(6))
             return datetime(year, month, day, hour, minute, second)
 
+        # Examples: IMG_20230901.jpg, 20230901.PNG
+        pattern = re.compile(
+            r"^(IMG_)?(\d{4})(\d{2})(\d{2})\.(jpe?g|png)$",
+            re.IGNORECASE,
+        )
+        match = re.search(pattern, file_name)
+
+        if match:
+            year = int(match.group(2))
+            month = int(match.group(3))
+            day = int(match.group(4))
+            return datetime(year, month, day)
+
         return None
 
     @staticmethod
