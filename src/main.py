@@ -1,70 +1,30 @@
 #!/usr/bin/env python3
 
 import os
-from collections import Counter
 import logging
-
-from exporter import generate_import_me, GenerationAbortedException
-from inserter import insert_image
-from renamer import rename_images, RenameAbortedException
-from config import disclaimer, image_extensions
-from args import ArgParser
+from exporter import Exporter, GenerationAbortedException
+from inserter import Inserter
+from renamer import Renamer, RenameAbortedException
+from config import image_extensions
+from controller import Controller
 from summarizer import summarize
-from ui.ui_f import get_ui
+from config import disclaimer
 
 logging.basicConfig(level=logging.INFO)
 
-args = ArgParser()
+c = Controller()
+r = Renamer(c)
+e = Exporter(c)
+i = Inserter(c)
 
 
-# Dictionary of all found images with key as date_number and value as ImageEntry
-# Example: 19601: ("IMG_20230901_203000.jpg", 2023-09-01-20-30-00, "metadata")
-images = {}
-
-# Counters for where the date was read from. This will be used after all images where read from folder.
-# Possible types: metadata, android, ios, oneshot, whatsapp, skipped, error
-counts = Counter()
-
-# Either gui or cli
-# Will get initialized later
-ui = None
-
-
-def generate_json(folder):
-    # 1. Fill the images dictionary
-    for _root, _dirs, files in os.walk(folder):
-        for file_name in files:
-            if file_name.lower().endswith(image_extensions):
-                insert_image(file_name, images, args, counts, ui)
-
-    # 2. Count the found images
-    for date_number, image_entry in images.items():
-        counts[image_entry.date_time_read_from] += 1
-
-    # 3. Generate the JSON export
-    if images:
-        try:
-            rename_images(images, args)
-            generate_import_me(images, args)
-        except RenameAbortedException:
-            print(
-                "Images will not be renamed. Skipping generation of the 'import-me.json'."
-            )
-        except GenerationAbortedException:
-            print("Skipping generation of the 'import-me.json'.")
-
-
-if __name__ == "__main__":
-    args.parse()
-
-    ui = get_ui(args.get_use_gui(), args.get_auto_decide())
-
-    folder_path = args.get_image_folder_path()
+def verify_paths() -> None:
+    folder_path = c.args.get_image_folder_path()
     if not (os.path.exists(folder_path) and os.path.isdir(folder_path)):
         logging.error(f"The folder '{folder_path}' does not exist.")
         exit(1)
 
-    export_file_location = args.get_export_file_location()
+    export_file_location = c.args.get_export_file_location()
     if os.path.exists(export_file_location) and not os.path.isfile(
         export_file_location
     ):
@@ -76,16 +36,48 @@ if __name__ == "__main__":
         logging.error(f"The folder '{export_path}' does not exist.")
         exit(1)
 
-    print(disclaimer)
 
-    if not args.get_confirmation():
-        answer = input("Start the generation now? [y/N] > ").strip().lower()
+def confirm_start() -> None:
+    if not c.args.get_confirmation():
+        confirmation = c.ui.confirm(f"{disclaimer}\nStart the generation now?")
 
-    if args.get_confirmation() or answer == "yes" or answer == "y":
-        print()
-        generate_json(folder_path)
+    return c.args.get_confirmation() or confirmation
 
-        if args.get_summarize():
-            summarize(counts)
+
+def generate_json() -> None:
+    folder = c.args.get_image_folder_path()
+    # 1. Fill the images dictionary
+    for _root, _dirs, files in os.walk(folder):
+        for file_name in files:
+            if file_name.lower().endswith(image_extensions):
+                i.insert_image(file_name)
+
+    # 2. Count the found images
+    for date_number, image_entry in c.images.items():
+        c.counts[image_entry.date_time_read_from] += 1
+
+    # 3. Generate the JSON export
+    if c.images:
+        try:
+            r.rename_images(c)
+            e.export()
+        except RenameAbortedException:
+            logging.error(
+                "Images will not be renamed. Skipping generation of the 'import-me.json'."
+            )
+        except GenerationAbortedException:
+            logging.error("Skipping generation of the 'import-me.json'.")
+
+
+if __name__ == "__main__":
+    c.parse_args()
+    c.init_ui()
+    verify_paths()
+
+    if confirm_start():
+        generate_json()
+
+        if c.args.should_summarize():
+            summarize(c.counts)
     else:
-        print("Aborting.")
+        logging.error("Aborting.")

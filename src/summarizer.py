@@ -1,4 +1,7 @@
-def summarize(counts):
+from collections import Counter
+
+
+def summarize(counts: Counter) -> None:
     print("\n---------------- RESULT ----------------")
     import_count = counts.total() - counts["skipped"] - counts["error"]
     print(f"Images found: {counts.total()}")

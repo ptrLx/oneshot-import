@@ -3,7 +3,7 @@ import config
 
 
 class ArgParser:
-    def __init__(self):
+    def __init__(self) -> None:
         self.parser = argparse.ArgumentParser(
             description="Import images from the past into OneShot."
         )
@@ -76,29 +76,29 @@ class ArgParser:
             "--no-gui", "--cli", action="store_false", dest="gui", help="use the cli"
         )
 
-    def parse(self):
+    def parse(self) -> None:
         self.args = self.parser.parse_args()
 
-    def get_confirmation(self):
+    def get_confirmation(self) -> bool:
         return self.args.yes
 
-    def get_summarize(self):
+    def should_summarize(self) -> bool:
         return self.args.summarize
 
-    def get_image_folder_path(self):
+    def get_image_folder_path(self) -> str:
         return self.args.path
 
-    def get_export_file_location(self):
+    def get_export_file_location(self) -> str:
         return self.args.output
 
-    def get_default_text(self):
+    def get_default_text(self) -> str:
         return self.args.default_text
 
-    def get_default_happiness(self):
+    def get_default_happiness(self) -> str:
         return self.args.default_happiness
 
-    def get_use_gui(self):
+    def get_use_gui(self) -> bool:
         return self.args.gui
 
-    def get_auto_decide(self):
+    def get_auto_decide(self) -> bool:
         return self.args.auto
