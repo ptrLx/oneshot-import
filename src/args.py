@@ -57,6 +57,24 @@ class ArgParser:
             default=config.default_happiness,
             help="specify default happiness level",
         )
+        self.parser.add_argument(
+            "--gui", action="store_true", default=False, help="start the gui"
+        )
+        self.parser.add_argument(
+            "--auto",
+            action="store_true",
+            default=True,
+            help="automatically pick an image if a date collision happens",
+        )
+        self.parser.add_argument(
+            "--no-auto",
+            action="store_false",
+            dest="auto",
+            help="disable automatic decision on date collision (OneShots will still win over other images)",
+        )
+        self.parser.add_argument(
+            "--no-gui", "--cli", action="store_false", dest="gui", help="use the cli"
+        )
 
     def parse(self):
         self.args = self.parser.parse_args()
@@ -67,7 +85,7 @@ class ArgParser:
     def get_summarize(self):
         return self.args.summarize
 
-    def get_path(self):
+    def get_image_folder_path(self):
         return self.args.path
 
     def get_export_file_location(self):
@@ -78,3 +96,9 @@ class ArgParser:
 
     def get_default_happiness(self):
         return self.args.default_happiness
+
+    def get_use_gui(self):
+        return self.args.gui
+
+    def get_auto_decide(self):
+        return self.args.auto

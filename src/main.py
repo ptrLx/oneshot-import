@@ -3,18 +3,21 @@
 import os
 from collections import Counter
 import logging
+
 from exporter import generate_import_me, GenerationAbortedException
 from inserter import insert_image
 from renamer import rename_images, RenameAbortedException
 from config import disclaimer, image_extensions
 from args import ArgParser
 from summarizer import summarize
+from ui.ui_f import get_ui
 
 logging.basicConfig(level=logging.INFO)
 
 args = ArgParser()
 
-# Dictionary of all found images with key as date_number and value as (filename, date_time, datetime_read_from)
+
+# Dictionary of all found images with key as date_number and value as ImageEntry
 # Example: 19601: ("IMG_20230901_203000.jpg", 2023-09-01-20-30-00, "metadata")
 images = {}
 
@@ -22,17 +25,21 @@ images = {}
 # Possible types: metadata, android, ios, oneshot, whatsapp, skipped, error
 counts = Counter()
 
+# Either gui or cli
+# Will get initialized later
+ui = None
+
 
 def generate_json(folder):
     # 1. Fill the images dictionary
     for _root, _dirs, files in os.walk(folder):
         for file_name in files:
             if file_name.lower().endswith(image_extensions):
-                insert_image(file_name, images, args, counts)
+                insert_image(file_name, images, args, counts, ui)
 
     # 2. Count the found images
-    for date_number, (_, __, datetime_read_from) in images.items():
-        counts[datetime_read_from] += 1
+    for date_number, image_entry in images.items():
+        counts[image_entry.date_time_read_from] += 1
 
     # 3. Generate the JSON export
     if images:
@@ -50,7 +57,9 @@ def generate_json(folder):
 if __name__ == "__main__":
     args.parse()
 
-    folder_path = args.get_path()
+    ui = get_ui(args.get_use_gui(), args.get_auto_decide())
+
+    folder_path = args.get_image_folder_path()
     if not (os.path.exists(folder_path) and os.path.isdir(folder_path)):
         logging.error(f"The folder '{folder_path}' does not exist.")
         exit(1)

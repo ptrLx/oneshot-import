@@ -1,44 +1,43 @@
 import logging
 from datetime import datetime
 from datereader import DateReader
+from image_entry import ImageEntry
 
 
-def date_to_number(input_date):
-    reference_date = datetime(1970, 1, 1)
-    delta = input_date - reference_date
-    days_since_reference = delta.days
-    return days_since_reference
-
-
-def insert_image(file_name, images, args, counts):
-    logging.debug(f"Found image: {file_name}")
+def insert_image(file_name, images, args, counts, ui):
+    logging.debug(f"Found image: {file_name}.")
 
     date = DateReader.read_oneshot_filename(file_name)
     if date:
-        logging.debug(f"Found image: {file_name}")
         logging.info(
             f"Date {date} found for image '{file_name}' in filename (OneShot naming schema)."
         )
-        date_number = date_to_number(date)
+        image_entry = ImageEntry(file_name, date, "oneshot")
+        date_number = image_entry.get_date_number()
         if date_number not in images:
-            images[date_number] = (file_name, date, "oneshot")
+            images[date_number] = image_entry
         else:
-            if images[date_number][2] == "oneshot":
-                date_only = datetime.strftime(date, "%Y-%m-%d")
-                logging.info(
-                    f"Skipping image {file_name}. There is already a entry at {date_only}."
+            if images[date_number].date_time_read_from == "oneshot":
+                choice = ui.choose_image(
+                    images[date_number].file_name,
+                    file_name,
+                    args.get_image_folder_path(),
+                    date,
                 )
+                if choice == 2:
+                    images.update({date_number: image_entry})
             else:
-                images[date_number] = (file_name, date, "oneshot")
+                images.update({date_number: image_entry})
             counts["skipped"] += 1
         return
 
-    date = DateReader.read_metadata(f"{args.get_path()}/{file_name}")
+    date = DateReader.read_metadata(f"{args.get_image_folder_path()}/{file_name}")
     if date:
-        date_number = date_to_number(date)
+        image_entry = ImageEntry(file_name, date, "metadata")
+        date_number = image_entry.get_date_number()
         if date_number not in images:
             logging.info(f"Date {date} found for image '{file_name}' in metadata.")
-            images[date_number] = (file_name, date, "metadata")
+            images[date_number] = image_entry
         else:
             date_only = datetime.strftime(date, "%Y-%m-%d")
             logging.info(
@@ -49,12 +48,13 @@ def insert_image(file_name, images, args, counts):
 
     date = DateReader.read_android_filename(file_name)
     if date:
-        date_number = date_to_number(date)
+        image_entry = ImageEntry(file_name, date, "android")
+        date_number = image_entry.get_date_number()
         if date_number not in images:
             logging.info(
                 f"Date {date} found for image '{file_name}' in filename (Android naming schema)."
             )
-            images[date_number] = (file_name, date, "android")
+            images[date_number] = image_entry
         else:
             date_only = datetime.strftime(date, "%Y-%m-%d")
             logging.info(
@@ -65,12 +65,13 @@ def insert_image(file_name, images, args, counts):
 
     date = DateReader.read_ios_filename(file_name)
     if date:
-        date_number = date_to_number(date)
+        image_entry = ImageEntry(file_name, date, "ios")
+        date_number = image_entry.get_date_number()
         if date_number not in images:
             logging.info(
                 f"Date {date} found for image '{file_name}' in filename (IOS naming schema)."
             )
-            images[date_number] = (file_name, date, "ios")
+            images[date_number] = image_entry
         else:
             date_only = datetime.strftime(date, "%Y-%m-%d")
             logging.info(
@@ -84,9 +85,10 @@ def insert_image(file_name, images, args, counts):
         logging.info(
             f"Date {date} found for image '{file_name}' in filename (WhatsApp naming schema)."
         )
-        date_number = date_to_number(date)
+        image_entry = ImageEntry(file_name, date, "whatsapp")
+        date_number = image_entry.get_date_number()
         if date_number not in images:
-            images[date_number] = (file_name, date, "whatsapp")
+            images[date_number] = image_entry
         else:
             date_only = datetime.strftime(date, "%Y-%m-%d")
             logging.info(

@@ -9,22 +9,22 @@ class GenerationAbortedException(Exception):
 
 def generate_import_me(images, args):
     json_export = []
-    for date_number, (file_name, date, _) in images.items():
+    for date_number, image_entry in images.items():
         json_entry = {
             "date": date_number,
-            "created": int(date.timestamp()),
-            "dayOfYear": date.timetuple().tm_yday,
-            "relativePath": file_name,
+            "created": int(image_entry.date_time.timestamp()),
+            "dayOfYear": image_entry.date_time.timetuple().tm_yday,
+            "relativePath": image_entry.file_name,
             "happiness": args.get_default_happiness(),
             "motivation": "",
             "textContent": args.get_default_text(),
         }
         json_export.append(json_entry)
 
-    write_import_me(json_export, args)
+    __write_import_me(json_export, args)
 
 
-def write_import_me(json_export, args):
+def __write_import_me(json_export, args):
     file_path = args.get_export_file_location()
 
     if (

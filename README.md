@@ -7,6 +7,7 @@ Import images from the past into your [OneShot](https://github.com/ptrLx/OneShot
 * clone this repo
 * install Python 3.11
 * install pipenv (`pip install pipenv --user`)
+* install tkinter for your OS
 * run `pipenv install` and `pipenv shell`
 * now run the script (`python3 src/main.py`)
 
