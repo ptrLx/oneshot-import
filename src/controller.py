@@ -1,6 +1,4 @@
 from collections import Counter
-import logging
-import os
 from ui.ui_f import get_ui
 from args import ArgParser
 

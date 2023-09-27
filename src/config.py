@@ -1,10 +1,11 @@
 disclaimer = """This script imports images from past dates into your OneShot diary.
 To get started, copy the images into the 'image' folder.
-Make sure to copy only one image per day. Otherwise the importer will select one of them.
+Make sure to copy only one image per day. Otherwise you will get asked which picture to choose (OneShots will always be preferred over other images).
+Start with '--auto' to let the importer choose an image.
 
 A 'import-me.json' file will be generated, which can be imported in the OneShot-App.
 
-Be aware that all images will be renamed to the OneShot naming convention.
+Be aware that all images will be renamed to the OneShot naming schema.
 """
 
 # Possible image extensions in lowercase

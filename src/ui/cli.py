@@ -28,7 +28,7 @@ class CLI(UI):
         self,
         image_name1: str,
         image_name2: str,
-        image_folder_path: str,
+        _image_folder_path: str,
         date_time: datetime,
     ) -> int:
         date_only = datetime.strftime(date_time, "%Y-%m-%d")

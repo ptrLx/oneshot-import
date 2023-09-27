@@ -29,7 +29,7 @@ def __read_metadata(file_path: str) -> datetime:
         return None
 
 
-def __read_re_date_time(regexp: str, file_name: str) -> datetime:
+def __read_re_date_time(regexp: str, file_name: str, offset=0) -> datetime:
     pattern = re.compile(
         regexp,
         re.IGNORECASE,
@@ -37,16 +37,16 @@ def __read_re_date_time(regexp: str, file_name: str) -> datetime:
     match = re.search(pattern, file_name)
 
     if match:
-        year = int(match.group(1))
-        month = int(match.group(2))
-        day = int(match.group(3))
-        hour = int(match.group(4))
-        minute = int(match.group(5))
-        second = int(match.group(6))
+        year = int(match.group(1 + offset))
+        month = int(match.group(2 + offset))
+        day = int(match.group(3 + offset))
+        hour = int(match.group(4 + offset))
+        minute = int(match.group(5 + offset))
+        second = int(match.group(6 + offset))
         return datetime(year, month, day, hour, minute, second)
 
 
-def __read_re_date_only(regexp: str, file_name: str) -> datetime:
+def __read_re_date_only(regexp: str, file_name: str, offset=0) -> datetime:
     pattern = re.compile(
         regexp,
         re.IGNORECASE,
@@ -54,9 +54,9 @@ def __read_re_date_only(regexp: str, file_name: str) -> datetime:
     match = re.search(pattern, file_name)
 
     if match:
-        year = int(match.group(2))
-        month = int(match.group(3))
-        day = int(match.group(4))
+        year = int(match.group(1 + offset))
+        month = int(match.group(2 + offset))
+        day = int(match.group(3 + offset))
         return datetime(year, month, day)
 
     return None
@@ -65,21 +65,19 @@ def __read_re_date_only(regexp: str, file_name: str) -> datetime:
 def __read_android_filename(file_name: str) -> datetime:
     # Examples: IMG_20230901_203000.jpg, 20230901_203000.PNG
     regexp = r"^(IMG_)?(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})\.(jpe?g|png)$"
-    date_time = __read_re_date_time(regexp, file_name)
+    date_time = __read_re_date_time(regexp, file_name, offset=1)
     if date_time:
         return date_time
 
-    # Examples: 2023-09-01-20-30-00-000.jpg, 2023-09-01-20-30-00.PNG
-    regexp = (
-        r"^(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})(-(\d{3}))?\.(jpe?g|png)$"
-    )
-    date_time = __read_re_date_time(regexp, file_name)
+    # Examples: IMG-2023-09-01-20-30-00-000.jpg, 2023-09-01-20-30-00.PNG
+    regexp = r"^(IMG_)?(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})(-(\d{3}))?\.(jpe?g|png)$"
+    date_time = __read_re_date_time(regexp, file_name, offset=1)
     if date_time:
         return date_time
 
     # Examples: IMG_20230901.jpg, 20230901.PNG
     regexp = r"^(IMG_)?(\d{4})(\d{2})(\d{2})\.(jpe?g|png)$"
-    date_time = __read_re_date_only(regexp, file_name)
+    date_time = __read_re_date_only(regexp, file_name, offset=1)
     if date_time:
         return date_time
 
@@ -100,11 +98,11 @@ def __read_oneshot_filename(file_name: str) -> datetime:
 
 def __read_whatsapp_filename(file_name: str) -> datetime:
     # IMG-20230901-WA0007.jpg
-    regexp = (r"^(IMG-)?(\d{4})(\d{2})(\d{2})-WA(\d{4})\.(jpe?g|png)$",)
-    return __read_re_date_only(regexp, file_name)
+    regexp = r"^(IMG-)?(\d{4})(\d{2})(\d{2})-WA(\d{4})\.(jpe?g|png)$"
+    return __read_re_date_only(regexp, file_name, offset=1)
 
 
-def read_date_and_type(self, folder_path: str, file_name: str) -> (datetime, str):
+def read_date_and_type(folder_path: str, file_name: str) -> (datetime, str):
     date = __read_oneshot_filename(file_name)
     if date:
         return date, "oneshot"

@@ -26,8 +26,10 @@ Import images from the past into your [OneShot](https://github.com/ptrLx/OneShot
 ## Usage
 
 ```
-usage: main.py [-h] [-y] [--summarize] [--no-summarize] [-p PATH] [-o OUTPUT] [--default-text DEFAULT_TEXT]
+usage: main.py [-h] [-y] [--summarize] [--no-summarize] [-p PATH]
+               [-o OUTPUT] [--default-text DEFAULT_TEXT]
                [--default-happiness {NOT_SPECIFIED,VERY_HAPPY,HAPPY,NEUTRAL,SAD,VERY_SAD}]
+               [--gui] [--auto] [--no-auto] [--no-gui]
 
 Import images from the past into OneShot.
 
@@ -43,4 +45,10 @@ options:
                         specify default text
   --default-happiness {NOT_SPECIFIED,VERY_HAPPY,HAPPY,NEUTRAL,SAD,VERY_SAD}
                         specify default happiness level
+  --gui                 start the gui
+  --auto                automatically pick an image if a date collision
+                        happens
+  --no-auto             disable automatic decision on date collision
+                        (OneShots will still win over other images)
+  --no-gui, --cli       use the cli
 ```

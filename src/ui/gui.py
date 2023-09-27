@@ -1,6 +1,6 @@
 from ui.ui import UI
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import messagebox
 from PIL import Image, ImageTk
 
 
@@ -10,11 +10,24 @@ class GUI(UI):
         self.selected_index = None
         self.root = None
 
-    def inform(self, msg):
-        pass
+    def inform(self, msg) -> None:
+        self.root = tk.Tk()
+        self.root.title("OneShot import")
+        messagebox.showinfo("Information", msg)
+        self.root.mainloop()
+        # self.root.quit()
+        # self.root.destroy()
 
     def confirm(self, msg: str, default_is_no=True) -> bool:
-        pass
+        self.root = tk.Tk()
+        self.root.title("OneShot import")
+        result = messagebox.askyesno(
+            "Confirmation", msg, default="no" if default_is_no else "yes"
+        )
+        self.root.mainloop()
+        # self.root.quit()
+        # self.root.destroy()
+        return result
 
     def __image_selected_callback(self, index):
         self.root.quit()

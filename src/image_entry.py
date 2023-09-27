@@ -15,8 +15,14 @@ class ImageEntry:
         self.date_time = date_time
         self.date_time_read_from = date_time_read_from
 
-    def get_date_number(self) -> int:
+    def date_number(self) -> int:
         reference_date = datetime(1970, 1, 1)
         delta = self.date_time - reference_date
         days_since_reference = delta.days
         return days_since_reference
+
+    def timestamp(self) -> int:
+        return int(self.date_time.timestamp())
+
+    def day_of_year(self) -> int:
+        return self.date_time.timetuple().tm_yday
