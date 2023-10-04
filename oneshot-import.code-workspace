@@ -11,9 +11,10 @@
 			"exif",
 			"getexif",
 			"GPSTAGS",
-			"renamer",
-			"whatsapp",
 			"oneshot",
+			"oneshots",
+			"renamer",
+			"whatsapp"
 		],
 	}
 }

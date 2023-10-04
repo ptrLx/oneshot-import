@@ -6,7 +6,7 @@ from controller import Controller
 
 def export_json(c: Controller):
     json_export = []
-    for date_number, image_entry in c.images.items():
+    for date_number, image_entry in c.selected_images.items():
         json_entry = {
             "date": date_number,
             "created": image_entry.timestamp(),

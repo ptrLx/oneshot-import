@@ -17,8 +17,7 @@ class UI(ABC):
     @abstractmethod
     def choose_image(
         self,
-        image_name1: str,
-        image_name2: str,
+        images: list,  # of ImageEntries
         image_folder_path: str,
         date_time: datetime,
     ):

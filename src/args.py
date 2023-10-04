@@ -63,7 +63,7 @@ class ArgParser:
         self.parser.add_argument(
             "--auto",
             action="store_true",
-            default=True,
+            default=False,
             help="automatically pick an image if a date collision happens",
         )
         self.parser.add_argument(

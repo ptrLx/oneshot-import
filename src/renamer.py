@@ -8,7 +8,7 @@ def rename_images(c: Controller) -> None:
     folder_path = c.args.get_image_folder_path()
     updated_images = {}
 
-    for date_number, image_entry in c.images.items():
+    for date_number, image_entry in c.selected_images.items():
         file_extension = os.path.splitext(image_entry.file_name)[-1].lower()
         if file_extension == ".jpeg":
             file_extension = ".jpg"
@@ -32,4 +32,4 @@ def rename_images(c: Controller) -> None:
                 print(f"Failed to rename {image_entry.file_name}: {e}")
                 exit(1)
 
-    c.images.update(updated_images)
+    c.selected_images.update(updated_images)

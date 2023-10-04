@@ -26,23 +26,25 @@ class CLI(UI):
 
     def choose_image(
         self,
-        image_name1: str,
-        image_name2: str,
+        images: list,  # of ImageEntries
         _image_folder_path: str,
         date_time: datetime,
     ) -> int:
         date_only = datetime.strftime(date_time, "%Y-%m-%d")
         if self.auto_decide:
             logging.info(
-                f"Skipping image {image_name2}. There is already a entry at {date_only}."
+                f"Choose {images[0].file_name} automatically for date {date_only}. Skipped images: {images[1:]}"
             )
             return 1
         else:
             while True:
-                answer = int(
-                    input(
-                        f"Collision at {date_only}: ({image_name1} [1], {image_name2} [2]) [1/2] > "
+                try:
+                    answer = int(
+                        input(
+                            f"Collision at {date_only}: {images}. Select index [1..{len(images)}] > "
+                        )
                     )
-                )
-                if answer in (1, 2):
+                except ValueError:
+                    continue
+                if answer in (1, len(images)):
                     return answer

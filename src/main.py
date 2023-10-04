@@ -45,18 +45,41 @@ def generate_json() -> None:
     folder = c.args.get_image_folder_path()
     file_path = c.args.get_export_file_location()
 
-    # 1. Scan the images dictionary
+    # 1. Scan the images dictionary for all image files
     for _root, _dirs, files in os.walk(folder):
         for file_name in files:
             if file_name.lower().endswith(image_extensions):
                 i.insert_image(file_name)
 
-    # 2. Count the found images
-    for _, image_entry in c.images.items():
+    # 2. Choose one image per date conflict
+
+    for date_number, image_list in c.images.items():
+        if len(image_list) == 1:
+            c.selected_images[date_number] = image_list[0]
+        else:
+            # Find all OneShots in the image_list
+            oneshots = []
+            for image in image_list:
+                if image.date_time_read_from == "oneshot":
+                    oneshots.append(image)
+
+            # Oneshots will be preferred over normal images
+            if len(oneshots) == 1:
+                c.selected_images[date_number] = oneshots[0]
+            elif len(oneshots) > 1:
+                choice = c.ui.choose_image(oneshots, folder, oneshots[0].date_time)
+                c.selected_images[date_number] = oneshots[choice]
+
+            else:
+                choice = c.ui.choose_image(image_list, folder, image_list[0].date_time)
+                c.selected_images[date_number] = image_list[choice]
+
+    # 3. Count the found images
+    for _, image_entry in c.selected_images.items():
         c.counts[image_entry.date_time_read_from] += 1
 
-    if c.images:
-        # 3. Rename all images
+    if c.selected_images:
+        # 4. Rename all images
 
         # Ask for permission to rename all images to the OneShot naming schema
         if not c.args.get_confirmation():
@@ -71,7 +94,7 @@ def generate_json() -> None:
 
         rename_images(c)
 
-        # 4. Generate the JSON export
+        # 5. Generate the JSON export
 
         # If the file already exists, the user should be asked if it can be overwritten
         confirmation = True

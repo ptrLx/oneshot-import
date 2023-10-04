@@ -43,39 +43,32 @@ class GUI(UI):
         return image.resize((new_width, new_height))
 
     def choose_image(
-        self, image_name1: str, image_name2: str, image_folder_path: str, _date_time
+        self,
+        images: list,  # of ImageEntries
+        image_folder_path: str,
+        _date_time,
     ):
-        self.selected_index = None
+        self.selected_index = 0
         self.root = tk.Tk()
         self.root.title("Choose image")
 
-        filename_label1 = tk.Label(self.root, text=image_name1)
-        filename_label1.grid(row=0, column=0)
-        image1 = Image.open(f"{image_folder_path}/{image_name1}")
-        image1 = self.__resize_image(image1, 400, 400)
-        image1 = ImageTk.PhotoImage(image1)
-        label1 = tk.Label(self.root, image=image1)
-        label1.grid(row=1, column=0)
-        button1 = tk.Button(
-            self.root,
-            text="Choose image 1",
-            command=lambda: self.__image_selected_callback(1),
-        )
-        button1.grid(row=2, column=0)
+        for index, image in enumerate(images):
+            filename_label = tk.Label(self.root, text=image.file_name)
+            filename_label.grid(row=0, column=index)
 
-        filename_label1 = tk.Label(self.root, text=image_name2)
-        filename_label1.grid(row=0, column=1)
-        image2 = Image.open(f"{image_folder_path}/{image_name2}")
-        image2 = self.__resize_image(image2, 400, 400)
-        image2 = ImageTk.PhotoImage(image2)
-        label2 = tk.Label(self.root, image=image2)
-        label2.grid(row=1, column=1)
-        button2 = tk.Button(
-            self.root,
-            text="Choose image 2",
-            command=lambda: self.__image_selected_callback(2),
-        )
-        button2.grid(row=2, column=1)
+            image = Image.open(f"{image_folder_path}/{image.file_name}")
+            image = self.__resize_image(image, 400, 400)
+            image = ImageTk.PhotoImage(image)
+
+            label = tk.Label(self.root, image=image)
+            label.grid(row=1, column=index)
+
+            button = tk.Button(
+                self.root,
+                text=f"Choose image {index + 1}",
+                command=lambda i=index: self.__image_selected_callback(i),
+            )
+            button.grid(row=2, column=index)
 
         self.root.mainloop()
 
