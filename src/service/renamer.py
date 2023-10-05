@@ -1,14 +1,13 @@
 import os
 import logging
-from controller import Controller
-from image_entry import ImageEntry
+from model.image_entry import ImageEntry
 
 
-def rename_images(c: Controller) -> None:
-    folder_path = c.args.get_image_folder_path()
+def renamer_service(controller) -> None:
+    folder_path = controller.args.get_image_folder_path()
     updated_images = {}
 
-    for date_number, image_entry in c.selected_images.items():
+    for date_number, image_entry in controller.selected_images.items():
         file_extension = os.path.splitext(image_entry.file_name)[-1].lower()
         if file_extension == ".jpeg":
             file_extension = ".jpg"
@@ -32,4 +31,5 @@ def rename_images(c: Controller) -> None:
                 print(f"Failed to rename {image_entry.file_name}: {e}")
                 exit(1)
 
-    c.selected_images.update(updated_images)
+    controller.selected_images.update(updated_images)
+    controller.set_event("rename_finished")

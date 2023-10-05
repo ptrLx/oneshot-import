@@ -1,5 +1,5 @@
 import argparse
-import config
+import util.config as config
 
 
 class ArgParser:
@@ -58,7 +58,7 @@ class ArgParser:
             help="specify default happiness level",
         )
         self.parser.add_argument(
-            "--gui", action="store_true", default=False, help="start the gui"
+            "--gui", action="store_true", default=True, help="start the gui"
         )
         self.parser.add_argument(
             "--auto",

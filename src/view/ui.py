@@ -3,8 +3,13 @@ from datetime import datetime
 
 
 class UI(ABC):
-    def __init__(self, auto_decide) -> None:
+    def __init__(self, controller, auto_decide: bool) -> None:
         self.auto_decide = auto_decide
+        self.c = controller
+
+    @abstractmethod
+    def start(self, confirm_actions: bool) -> None:
+        ...
 
     @abstractmethod
     def inform(self, msg) -> None:
