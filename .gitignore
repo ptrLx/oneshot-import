@@ -5,6 +5,7 @@ image/*.JPG
 image/*.jpeg
 image/*.JPEG
 image-test/
+sample-image/
 import-me.json
 tasks.md
 

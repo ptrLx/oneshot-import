@@ -12,11 +12,12 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "-y",
+                "--no-gui",
+                // "-y",
                 "-p",
-                "image-test/my-images",
+                "sample-image",
                 "-o",
-                "image-test/my-images/import-me.json"
+                "sample-image/import-me.json",
             ]
         }
     ]
