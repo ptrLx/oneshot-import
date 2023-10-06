@@ -4,7 +4,18 @@ import os
 from datetime import datetime
 from util.config import disclaimer
 from controller.controller import Controller
+from InquirerPy import inquirer
+
 import time
+import itertools, sys
+
+_spinner = itertools.cycle(["-", "/", "|", "\\"])
+
+
+def _next_spin():
+    sys.stdout.write(next(_spinner))  # write the next character
+    sys.stdout.flush()  # flush stdout buffer (actual character display)
+    sys.stdout.write("\b")  # erase the last written char
 
 
 class CLI(UI):
@@ -14,17 +25,24 @@ class CLI(UI):
     def start(self, confirm_actions: bool) -> None:
         # * 1. Ask to start
         if not confirm_actions:
-            confirmation = self.confirm(f"{disclaimer}\nStart the generation now?")
+            print(disclaimer)
+            confirmation = self.confirm("Start the generation now?")
 
         if not (confirm_actions or confirmation):
-            print("Aborting.")
+            print("❌ Aborted.")
+            self.c.set_event("stop")
             exit(1)
 
         # * 2. Read images
         self.c.set_event("insert")
 
-        if self.c.wait_for_event("insert_finished"):
-            self.c.events["insert_finished"].clear()
+        # // if self.c.wait_for_event("insert_finished"):
+        # //     self.c.events["insert_finished"].clear()
+
+        # * Loading animation
+        while not self.c.event_is_set("insert_finished"):
+            _next_spin()
+            time.sleep(0.1)
 
         # * 3. Choose images
         folder = self.c.args.get_image_folder_path()
@@ -59,18 +77,24 @@ class CLI(UI):
             # Ask for permission to rename all images to the OneShot naming schema
             if not self.c.args.get_confirmation():
                 confirmation = self.confirm(
-                    "\nAll files that can be imported will be renamed to the OneShot naming schema. Continue?"
+                    "All files that can be imported will be renamed to the OneShot naming schema. Continue?"
                 )
                 if not confirmation:
                     logging.error(
                         "Images will not be renamed. Skipping generation of the 'import-me.json'."
                     )
+                    self.c.set_event("stop")
                     exit(1)
 
         self.c.set_event("rename")
 
-        if self.c.wait_for_event("rename_finished"):
-            self.c.events["rename_finished"].clear()
+        # // if self.c.wait_for_event("rename_finished"):
+        # //     self.c.events["rename_finished"].clear()
+
+        # * Loading animation
+        while not self.c.event_is_set("rename_finished"):
+            _next_spin()
+            time.sleep(0.1)
 
         # * 6. Write export file
         file_path = self.c.args.get_export_file_location()
@@ -84,34 +108,41 @@ class CLI(UI):
             and not self.c.args.get_confirmation()
         ):
             confirmation = self.confirm(
-                f"\nThe file '{file_path}' already exists. Do you want to overwrite it?"
+                f"The file '{file_path}' already exists. Do you want to overwrite it?"
             )
 
         if not confirmation:
             logging.error("Skipping generation of the 'import-me.json'.")
+            self.c.set_event("stop")
             exit(1)
 
         self.c.set_event("export")
 
-        if self.c.wait_for_event("export_finished"):
-            self.c.events["export_finished"].clear()
+        # // if self.c.wait_for_event("export_finished"):
+        # //     self.c.events["export_finished"].clear()
 
-    def inform(self, msg):
-        print(msg)
+        # * Loading animation
+        while not self.c.event_is_set("export_finished"):
+            _next_spin()
+            time.sleep(0.1)
+
+        print(f"✔️ Import file written to '{file_path}'")
 
     def confirm(self, msg: str, default_is_no=True) -> bool:
-        if default_is_no:
-            answer = input(f"{msg} [y/N] > ").strip().lower()
-            print()
-            if answer == "yes" or answer == "y":
-                return True
-            return False
-        else:
-            answer = input(f"{msg} [Y/n] > ").strip().lower()
-            print()
-            if answer == "no" or answer == "n":
-                return False
-            return True
+        return inquirer.confirm(message=msg, default=not default_is_no).execute()
+
+        # // if default_is_no:
+        # //     answer = input(f"{msg} [y/N] > ").strip().lower()
+        # //     print()
+        # //     if answer == "yes" or answer == "y":
+        # //         return True
+        # //     return False
+        # // else:
+        # //     answer = input(f"{msg} [Y/n] > ").strip().lower()
+        # //     print()
+        # //     if answer == "no" or answer == "n":
+        # //         return False
+        # //     return True
 
     def choose_image(
         self,
@@ -126,14 +157,21 @@ class CLI(UI):
             )
             return 1
         else:
-            while True:
-                try:
-                    answer = int(
-                        input(
-                            f"Collision at {date_only}: {[i.file_name for i in images]}. Select index [1..{len(images)}] > "
-                        )
-                    )
-                except ValueError:
-                    continue
-                if answer in range(1, len(images) + 1):
-                    return answer - 1
+            result = inquirer.select(
+                message=f"Collision at date {date_only}. Select which image should be taken:",
+                choices=[f"{i}: {image.file_name}" for i, image in enumerate(images)],
+            ).execute()
+
+            return int(result[0].split(":")[0])
+
+            # // while True:
+            # //     try:
+            # //         answer = int(
+            # //             input(
+            # //                 f"Collision at {date_only}: {[i.file_name for i in images]}. Select index [1..{len(images)}] > "
+            # //             )
+            # //         )
+            # //     except ValueError:
+            # //         continue
+            # //     if answer in range(1, len(images) + 1):
+            # //         return answer - 1

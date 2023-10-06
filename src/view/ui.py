@@ -12,10 +12,6 @@ class UI(ABC):
         ...
 
     @abstractmethod
-    def inform(self, msg) -> None:
-        ...
-
-    @abstractmethod
     def confirm(self, msg, default_is_no=True) -> bool:
         ...
 

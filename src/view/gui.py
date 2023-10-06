@@ -14,7 +14,7 @@ class DisclaimerPage(tk.Frame):
         super().__init__(master)
         self.label = tk.Label(self, text=disclaimer)
         self.label.pack(pady=20)
-        self.next_button = ttk.Button(self, text="Next", bootstyle=SUCCESS)
+        self.next_button = ttk.Button(self, text="Next", bootstyle=PRIMARY)
         self.next_button.pack()
 
 
@@ -25,7 +25,7 @@ class LoadingPage(tk.Frame):
         self.label = tk.Label(self, text="Loading...")
         self.label.pack(pady=20)
         self.next_button = ttk.Button(
-            self, text="Next", state=tk.DISABLED, bootstyle=SUCCESS
+            self, text="Next", state=tk.DISABLED, bootstyle=PRIMARY
         )
         self.next_button.pack()
 

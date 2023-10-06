@@ -73,27 +73,27 @@ class Controller:
         try:
             self.ui.start(self.args.get_confirmation())
         except KeyboardInterrupt:
-            print("\nAborting.")
+            print("\n❌ Aborted.")
         finally:
             self.set_event("stop")
 
     def start_runner(self) -> None:
         flag = False
-        while not self.event_is_set("stop") or flag:
+        while not (self.event_is_set("stop") or flag):
             if self.events["insert"].wait(0.2):
                 self.events["insert"].clear()
                 inserter_service(self)
                 flag = True
 
         flag = False
-        while not self.event_is_set("stop") or flag:
+        while not (self.event_is_set("stop") or flag):
             if self.events["rename"].wait(0.2):
                 self.events["rename"].clear()
                 renamer_service(self)
                 flag = True
 
         flag = False
-        while not self.event_is_set("stop") or flag:
+        while not (self.event_is_set("stop") or flag):
             if self.events["export"].wait(0.2):
                 self.events["export"].clear()
                 exporter_service(self)
