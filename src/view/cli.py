@@ -19,16 +19,18 @@ def _next_spin():
 
 
 class CLI(UI):
-    def __init__(self, controller: Controller, auto_decide: bool) -> None:
-        super().__init__(controller, auto_decide)
+    def __init__(
+        self, controller: Controller, auto_decide: bool, confirm_actions: bool
+    ) -> None:
+        super().__init__(controller, auto_decide, confirm_actions)
 
-    def start(self, confirm_actions: bool) -> None:
+    def start(self) -> None:
         # * 1. Ask to start
-        if not confirm_actions:
+        if not self.confirm_actions:
             print(disclaimer)
-            confirmation = self.confirm("Start the generation now?")
+            confirmation = self.__confirm("Start the generation now?")
 
-        if not (confirm_actions or confirmation):
+        if not (self.confirm_actions or confirmation):
             print("❌ Aborted.")
             self.c.set_event("stop")
             exit(1)
@@ -60,11 +62,13 @@ class CLI(UI):
                 if len(oneshots) == 1:
                     self.c.selected_images[date_number] = oneshots[0]
                 elif len(oneshots) > 1:
-                    choice = self.choose_image(oneshots, folder, oneshots[0].date_time)
+                    choice = self.__choose_image(
+                        oneshots, folder, oneshots[0].date_time
+                    )
                     self.c.selected_images[date_number] = oneshots[choice]
 
                 else:
-                    choice = self.choose_image(
+                    choice = self.__choose_image(
                         image_list, folder, image_list[0].date_time
                     )
                     self.c.selected_images[date_number] = image_list[choice]
@@ -76,12 +80,12 @@ class CLI(UI):
         if self.c.selected_images:
             # Ask for permission to rename all images to the OneShot naming schema
             if not self.c.args.get_confirmation():
-                confirmation = self.confirm(
+                confirmation = self.__confirm(
                     "All files that can be imported will be renamed to the OneShot naming schema. Continue?"
                 )
                 if not confirmation:
-                    logging.error(
-                        "Images will not be renamed. Skipping generation of the 'import-me.json'."
+                    print(
+                        "❌ Images will not be renamed. Skipping generation of the 'import-me.json'."
                     )
                     self.c.set_event("stop")
                     exit(1)
@@ -91,9 +95,9 @@ class CLI(UI):
         # // if self.c.wait_for_event("rename_finished"):
         # //     self.c.events["rename_finished"].clear()
 
-        # * Loading animation
+        # * Waiting for rename
         while not self.c.event_is_set("rename_finished"):
-            _next_spin()
+            # _next_spin() no loading animation needed. User will see logging about reamed images.
             time.sleep(0.1)
 
         # * 6. Write export file
@@ -107,12 +111,12 @@ class CLI(UI):
             and os.path.isfile(file_path)
             and not self.c.args.get_confirmation()
         ):
-            confirmation = self.confirm(
+            confirmation = self.__confirm(
                 f"The file '{file_path}' already exists. Do you want to overwrite it?"
             )
 
         if not confirmation:
-            logging.error("Skipping generation of the 'import-me.json'.")
+            print("❌ Skipping generation of the 'import-me.json'.")
             self.c.set_event("stop")
             exit(1)
 
@@ -128,7 +132,7 @@ class CLI(UI):
 
         print(f"✔️ Import file written to '{file_path}'")
 
-    def confirm(self, msg: str, default_is_no=True) -> bool:
+    def __confirm(self, msg: str, default_is_no=True) -> bool:
         return inquirer.confirm(message=msg, default=not default_is_no).execute()
 
         # // if default_is_no:
@@ -144,7 +148,7 @@ class CLI(UI):
         # //         return False
         # //     return True
 
-    def choose_image(
+    def __choose_image(
         self,
         images: list,  # of ImageEntries
         _image_folder_path: str,

@@ -67,11 +67,16 @@ class Controller:
     def init_args(self) -> None:
         self.args.parse()
         self.verify_paths()
-        self.ui = create_ui(self, self.args.get_use_gui(), self.args.get_auto_decide())
+        self.ui = create_ui(
+            self,
+            self.args.get_use_gui(),
+            self.args.get_auto_decide(),
+            self.args.get_confirmation(),
+        )
 
     def start_ui(self) -> None:
         try:
-            self.ui.start(self.args.get_confirmation())
+            self.ui.start()
         except KeyboardInterrupt:
             print("\n❌ Aborted.")
         finally:
@@ -116,6 +121,22 @@ class Controller:
             return self.events[event].wait()
         else:
             raise ValueError("Unknown event!")
+
+    def clear_event(self, event: str) -> None:
+        if event in event_names:
+            self.events[event].clear()
+        else:
+            raise ValueError("Unknown event!")
+
+    def next_image_list(self):
+        def image_list_generator():
+            for _date_number, image_list in self.images.items():
+                yield image_list
+
+        if not hasattr(self, "image_list_gen"):
+            self.image_list_gen = image_list_generator()
+
+        return next(self.image_list_gen)
 
     def count_selected(self) -> None:
         for _, image_entry in self.selected_images.items():

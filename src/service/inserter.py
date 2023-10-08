@@ -22,7 +22,7 @@ def inserter_service(controller):
             if not type:
                 logging.warning(f"Date of image {file_name} not readable.")
                 controller.counts["error"] += 1
-                return
+                continue
 
             image_entry = ImageEntry(file_name, date, type)
             date_number = image_entry.date_number()
