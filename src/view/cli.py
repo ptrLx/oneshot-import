@@ -71,7 +71,7 @@ class CLI(UI):
                     choice = self.__choose_image(
                         image_list, folder, image_list[0].date_time
                     )
-                    self.c.selected_images[date_number] = image_list[choice]
+                    self.c.select_image(date_number, image_list[choice])
 
         # * 4. Count selected images
         self.c.count_selected()

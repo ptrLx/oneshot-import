@@ -130,13 +130,16 @@ class Controller:
 
     def next_image_list(self):
         def image_list_generator():
-            for _date_number, image_list in self.images.items():
-                yield image_list
+            for date_number, image_list in self.images.items():
+                yield date_number, image_list
 
         if not hasattr(self, "image_list_gen"):
             self.image_list_gen = image_list_generator()
 
         return next(self.image_list_gen)
+
+    def select_image(self, date_number, image: ImageEntry):
+        self.selected_images[date_number] = image
 
     def count_selected(self) -> None:
         for _, image_entry in self.selected_images.items():

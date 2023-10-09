@@ -55,12 +55,15 @@ class ChooseImagePage(tk.Frame):
 
 
 class ChooseImagePage(tk.Frame):
-    # todo: display images and put selected image in c.selected_images
+    # todo: display images and select button
+    # todo: use c.select_image(date_number, image)
     def __init__(self, master, gui):
         super().__init__(master)
         self.gui = gui
-        self.label = tk.Label(self, text="")
-        self.label.pack(pady=20)
+        self.image_list_label = tk.Label(self, text="")
+        self.image_list_label.pack(pady=20)
+        self.date_number_label = tk.Label(self, text="")
+        self.date_number_label.pack(pady=20)
         self.next_button = ttk.Button(
             self, text="Next", command=self.load_next_image_list
         )
@@ -68,8 +71,9 @@ class ChooseImagePage(tk.Frame):
 
     def load_next_image_list(self):
         try:
-            images = self.gui.c.next_image_list()
-            self.label.config(text=images)
+            date_number, images = self.gui.c.next_image_list()
+            self.image_list_label.config(text=images)
+            self.date_number_label.config(text=date_number)
         except StopIteration:
             self.gui.next_page()
 
