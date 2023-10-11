@@ -28,7 +28,7 @@ def renamer_service(controller) -> None:
                 )
                 logging.info(f"Renamed '{image_entry.file_name}' to '{new_file_name}'")
             except OSError as e:
-                print(f"Failed to rename {image_entry.file_name}: {e}")
+                logging.error(f"Failed to rename {image_entry.file_name}: {e}")
                 exit(1)
 
     controller.selected_images.update(updated_images)

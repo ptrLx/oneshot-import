@@ -20,4 +20,5 @@ def exporter_service(controller):
     with open(file_path, "w") as json_file:
         json.dump(json_export, json_file, indent=4)
 
+    logging.info(f"Import file written to '{file_path}.")
     controller.set_event("export_finished")

@@ -1,7 +1,7 @@
 from collections import defaultdict
 import os
 import logging
-import asyncio
+from datetime import datetime
 from collections import Counter
 from view.ui_f import create_ui
 from util.args import ArgParser
@@ -10,7 +10,6 @@ from model.image_entry import ImageEntry
 from service.renamer import renamer_service
 from service.exporter import exporter_service
 import threading
-from time import sleep
 
 event_names = [
     "stop",
@@ -70,7 +69,6 @@ class Controller:
         self.ui = create_ui(
             self,
             self.args.get_use_gui(),
-            self.args.get_auto_decide(),
             self.args.get_confirmation(),
         )
 
@@ -78,7 +76,7 @@ class Controller:
         try:
             self.ui.start()
         except KeyboardInterrupt:
-            print("\n❌ Aborted.")
+            print("❌ Aborted.")
         finally:
             self.set_event("stop")
 
@@ -128,18 +126,65 @@ class Controller:
         else:
             raise ValueError("Unknown event!")
 
-    def next_image_list(self):
-        def image_list_generator():
-            for date_number, image_list in self.images.items():
-                yield date_number, image_list
+    def image_list_generator(self):
+        # Only image_lists where a choice has to be made will be yielded
+        for date_number, image_list in self.images.items():
+            if len(image_list) == 1:  # Only one image exists
+                self.select_image(date_number, image_list[0])
+            else:
+                # Find all OneShots in the image_list
+                oneshots = []
+                for image in image_list:
+                    if image.date_time_read_from == "oneshot":
+                        oneshots.append(image)
 
+                # Oneshots will be preferred over normal images
+                if len(oneshots) == 0:  # No OneShot in the image list
+                    if self.args.get_auto_decide():
+                        selected_entry = image_list[0]
+                        selected_filename = selected_entry.file_name
+                        date_only = datetime.strftime(
+                            selected_entry.date_time, "%Y-%m-%d"
+                        )
+                        self.select_image(date_number, image_list[0])
+                        logging.info(
+                            f"Choose {selected_filename} automatically for date {date_only}. Skipped images: {[i.file_name for i in image_list[1:]]}"
+                        )
+                    else:
+                        yield date_number, image_list
+                elif len(oneshots) == 1:  # One OneShot where found
+                    selected_entry = oneshots[0]
+                    selected_filename = selected_entry.file_name
+                    date_only = datetime.strftime(selected_entry.date_time, "%Y-%m-%d")
+                    self.select_image(date_number, selected_entry)
+                    logging.info(
+                        f"Choose {selected_filename} for date {date_only} as it is the only OneShot. Skipped images: {[i.file_name for i in image_list if i.file_name != selected_filename]}"
+                    )
+                else:  # Multiple OneShots where found
+                    if self.args.get_auto_decide():
+                        selected_entry = oneshots[0]
+                        selected_filename = selected_entry.file_name
+                        date_only = datetime.strftime(
+                            selected_filename.date_time, "%Y-%m-%d"
+                        )
+                        self.select_image(date_number, selected_entry)
+                        logging.info(
+                            f"Choose {selected_filename} automatically for date {date_only}. Skipped images: {[i.file_name for i in image_list if i.file_name != selected_filename]}"
+                        )
+                    else:
+                        yield date_number, oneshots
+
+    def next_image_list(self):
         if not hasattr(self, "image_list_gen"):
-            self.image_list_gen = image_list_generator()
+            self.image_list_gen = self.image_list_generator()
 
         return next(self.image_list_gen)
 
     def select_image(self, date_number, image: ImageEntry):
         self.selected_images[date_number] = image
+
+    def inc_count(self, type: str):
+        self.counts[type] += 1
 
     def count_selected(self) -> None:
         for _, image_entry in self.selected_images.items():

@@ -7,13 +7,16 @@
 	"settings": {
 		"editor.formatOnSave": true,
 		"cSpell.words": [
+			"bootstyle",
 			"datereader",
 			"exif",
 			"getexif",
 			"GPSTAGS",
 			"oneshot",
 			"oneshots",
+			"pady",
 			"renamer",
+			"themename",
 			"whatsapp"
 		],
 	}

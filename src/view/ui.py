@@ -3,10 +3,9 @@ from datetime import datetime
 
 
 class UI(ABC):
-    def __init__(self, controller, auto_decide: bool, confirm_actions: bool) -> None:
-        self.auto_decide = auto_decide
+    def __init__(self, controller, skip_confirm_actions: bool) -> None:
         self.c = controller
-        self.confirm_actions = confirm_actions
+        self.skip_confirm_actions = skip_confirm_actions
 
     @abstractmethod
     def start(self) -> None:
