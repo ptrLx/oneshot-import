@@ -169,12 +169,15 @@ class AllDonePage(tk.Frame):
             self, text=f"✔️ Import file written to '{gui.file_path}.'"
         )
         self.label.pack(pady=20)
-        self.label2 = tk.Label(self, text=Summarizer().summarize(gui.c.counts))
-        self.label2.pack(pady=20)
+        self.summarization_label = tk.Label(self, text="")
+        self.summarization_label.pack(pady=20)
         self.close_button = ttk.Button(
             self, text="Close", command=self.gui.next_page, bootstyle=SUCCESS
         )
         self.close_button.pack()
+
+    def show_summarization(self):
+        self.summarization_label.config(text=Summarizer().summarize(self.gui.c.counts))
 
 
 class GUI(UI):
@@ -245,6 +248,8 @@ class GUI(UI):
         elif isinstance(self.current_page, LoadingWriteExportPage):
             self.c.set_event("export")
             self.current_page.start_loading()
+        elif isinstance(self.current_page, AllDonePage):
+            self.current_page.show_summarization()
 
     def start(self) -> None:
         self.root.mainloop()
