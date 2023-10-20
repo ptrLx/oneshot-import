@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.0](https://github.com/ptrLx/oneshot-import/compare/v0.1.0...v2.0.0) (2023-10-20)
+
+
+### Miscellaneous Chores
+
+* release 0.2.0 ([d8fca4b](https://github.com/ptrLx/oneshot-import/commit/d8fca4ba009b07b5c1edfd63534f36294da124e9))
+
 ## 0.1.0 (2023-10-20)
 
 
