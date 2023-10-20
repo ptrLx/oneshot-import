@@ -19,5 +19,8 @@
 			"themename",
 			"whatsapp"
 		],
+		"conventionalCommits.scopes": [
+			"cicd"
+		],
 	}
 }
