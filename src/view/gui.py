@@ -78,12 +78,16 @@ class ChooseImagePage(tk.Frame):
             image = Image.open(
                 f"{self.gui.c.args.get_image_folder_path()}/{image_entry.file_name}"
             )
-            image = self.__resize_image(image, 400, 400)
+            image = self.__resize_image(image, 200, 200)
             image = ImageTk.PhotoImage(image)
             self.image_elements.append(image)
 
             label = tk.Label(self, image=image)
             label.grid(row=1, column=index)
+
+            label.bind(
+                "<Button-1>", lambda event, i=index: self.__image_selected_callback(i)
+            )
 
             button = tk.Button(
                 self,

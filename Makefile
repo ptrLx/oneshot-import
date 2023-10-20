@@ -1,3 +1,5 @@
+OS := $(shell uname)
+
 .DEFAULT_GOAL:=help
 .PHONY: help
 help:  ## Display this help text
@@ -5,5 +7,18 @@ help:  ## Display this help text
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
 .PHONY: build
-build:  ## build standalone executable
-	pipenv shell pyinstaller src/main.py --onefile -w
+build:  ## Build standalone executable
+ifeq ($(OS),Linux)
+	pipenv run pyinstaller --onefile -w -n oneshot-web src/main.py
+endif
+
+ifeq ($(OS),Darwin)
+	pipenv run pyinstaller --onefile -w -n oneshot-web src/main.py # todo --icon logo/icon.iconset
+endif
+
+ifeq ($(OS),Windows)
+	pipenv run pyinstaller --onefile -w -n oneshot-web --icon logo/icon.ico src/main.py
+endif
+
+convert-icon: ## Convert icon.svg to .ico and iconset
+	cd logo && ./converter.sh
