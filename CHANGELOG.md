@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/ptrLx/oneshot-import/compare/v2.0.0...v2.1.0) (2023-10-21)
+
+
+### Features
+
+* :art: create releases and updated doc ([8070cf0](https://github.com/ptrLx/oneshot-import/commit/8070cf0a6e19def80eaf025515f714a1e9136358))
+
 ## [2.0.0](https://github.com/ptrLx/oneshot-import/compare/v0.1.0...v2.0.0) (2023-10-20)
 
 
