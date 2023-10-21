@@ -45,6 +45,7 @@ class ChooseImagePage(tk.Frame):
     def __init__(self, master, gui):
         super().__init__(master)
         self.gui = gui
+        self.image_elements = []
         self.image_date_number = None
 
     def __resize_image(self, image, max_width, max_height):
@@ -68,9 +69,10 @@ class ChooseImagePage(tk.Frame):
             return
 
         # Store all image elements to prevent the garbage collector from deleting them
-        self.image_elements = []
+        del self.image_elements[:]
+        # todo empty image container is shown when size of imagelist is smaller than before (list has 3 images, next list has 2 images => empty container for third one is shown)
 
-        # todo fix window size smaller than image list, image res too high
+        # todo fix window size smaller than image list
         for index, image_entry in enumerate(self.images):
             filename_label = tk.Label(self, text=image_entry.file_name)
             filename_label.grid(row=0, column=index)

@@ -2,20 +2,12 @@
 
 Import images from the past into your [OneShot](https://github.com/ptrLx/OneShot) app.
 
-## Requirements
-
-* clone this repo
-* install Python 3.11
-* install pipenv (`pip install pipenv --user`)
-* install tkinter for your OS
-* run `pipenv install` and `pipenv shell`
-* now run the script (`python src/main.py`)
-
 ## How it works
 
-* select images from different dates that you want to import into your OneShot diary
-* copy them into the `image` folder
-* now run `src/main.py`
+* download the [latest release](https://github.com/ptrLx/oneshot-import/releases/latest) for your os
+* create a folder `image` in the same folder as the executable
+* select images from different dates that you want to import into your OneShot diary and copy them into the `image` folder
+* start the executable
 * it will generate a `import-me.json`
 * copy the images into your OneShot folder on your device and use the import feature of the app to import the `import-me.json`:
   <div style="display:flex;">
@@ -26,10 +18,8 @@ Import images from the past into your [OneShot](https://github.com/ptrLx/OneShot
 ## Usage
 
 ```
-usage: main.py [-h] [-y] [--summarize] [--no-summarize] [-p PATH]
-               [-o OUTPUT] [--default-text DEFAULT_TEXT]
-               [--default-happiness {NOT_SPECIFIED,VERY_HAPPY,HAPPY,NEUTRAL,SAD,VERY_SAD}]
-               [--gui] [--auto] [--no-auto] [--no-gui]
+usage: main.py [-h] [-y] [--summarize] [--no-summarize] [-p PATH] [-o OUTPUT] [--default-text DEFAULT_TEXT]
+               [--default-happiness {NOT_SPECIFIED,VERY_HAPPY,HAPPY,NEUTRAL,SAD,VERY_SAD}] [--gui] [--auto] [--no-auto] [--no-gui]
 
 Import images from the past into OneShot.
 
@@ -46,9 +36,16 @@ options:
   --default-happiness {NOT_SPECIFIED,VERY_HAPPY,HAPPY,NEUTRAL,SAD,VERY_SAD}
                         specify default happiness level
   --gui                 start the gui
-  --auto                automatically pick an image if a date collision
-                        happens
-  --no-auto             disable automatic decision on date collision
-                        (OneShots will still win over other images)
+  --auto                automatically pick an image if a date collision happens
+  --no-auto             disable automatic decision on date collision (OneShots will still win over other images)
   --no-gui, --cli       use the cli
 ```
+
+## Development
+
+* clone this repo
+* install Python 3.11 and tkinter
+* install pipenv (`pip install pipenv --user`)
+* add pipenv to the PATH (Windows)
+* run `make setup`
+* start the script: `make start`

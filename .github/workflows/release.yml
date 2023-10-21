@@ -35,17 +35,17 @@ jobs:
             CMD_BUILD: >
               make build &&
               cd dist/ &&
-              zip -r9 oneshot-web oneshot-web.app/
-            OUT_FILE_NAME: oneshot-web.zip
+              zip -r9 oneshot-import oneshot-import.app/
+            OUT_FILE_NAME: oneshot-import.zip
             ASSET_MIME: application/zip
           - os: windows-latest
             TARGET: windows
             CMD_BUILD: make build
-            OUT_FILE_NAME: oneshot-web.exe
+            OUT_FILE_NAME: oneshot-import.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
           - os: ubuntu-latest
             CMD_BUILD: make build
-            OUT_FILE_NAME: oneshot-web
+            OUT_FILE_NAME: oneshot-import
             ASSET_MIME: application/x-pie-executable
 
     steps:
@@ -94,5 +94,5 @@ jobs:
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
           asset_path: ./dist/${{ matrix.OUT_FILE_NAME }}
-          asset_name: oneshot-web-${{ matrix.os }}-${{ needs.release-please.outputs.tag_name }}
+          asset_name: oneshot-import-${{ matrix.os }}-${{ needs.release-please.outputs.tag_name }}
           asset_content_type: ${{ matrix.ASSET_MIME }}
