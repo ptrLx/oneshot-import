@@ -4,7 +4,7 @@ Import images from the past into your [OneShot](https://github.com/ptrLx/OneShot
 
 ## How it works
 
-* follow the [Development instructions](##Development) to run the app
+* follow the [Development instructions](#development) to run the app
 
 <!-- * download the [latest release](https://github.com/ptrLx/oneshot-import/releases/latest) for your os
 * create a folder `image` in the same folder as the executable -->
