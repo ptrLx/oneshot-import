@@ -26,7 +26,8 @@ jobs:
 
   build:
     needs: [release-please]
-    if: ${{ needs.release-please.outputs.release_created }} && false # todo fix tcl error when starting binary
+    if: false # todo fix tcl error when starting binary
+    #todo if: ${{ needs.release-please.outputs.release_created }}
     name: build-executable
     env:
       upload_url: ${{ needs.release-please.outputs.upload_url }}
@@ -78,6 +79,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install pipenv
           make setup
 
       - name: Build with pyinstaller for ${{matrix.TARGET}}
