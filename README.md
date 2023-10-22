@@ -1,4 +1,12 @@
-# OneShot import
+<h1 align="center">
+    <br>
+    <img width="70" src="logo/v1/icon.svg" alt="App icon" />
+    <br>
+    OneShot Import
+    <br>
+</h1>
+
+![](https://img.shields.io/github/pipenv/locked/python-version/ptrlx/oneshot-import)
 
 Import images from the past into your [OneShot](https://github.com/ptrLx/OneShot) app.
 

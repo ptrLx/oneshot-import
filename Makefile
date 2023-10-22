@@ -21,13 +21,13 @@ ifeq ($(OS),Linux)
 endif
 
 ifeq ($(OS),Darwin)
-	pipenv run pyinstaller --onefile -w -n oneshot-import --hidden-import='PIL._tkinter_finder' src/main.py # todo --icon logo/icon.iconset
+	pipenv run pyinstaller --onefile -w -n oneshot-import --hidden-import='PIL._tkinter_finder' src/main.py # todo --icon logo/v1/icon.iconset
 	cd ./dist/ && zip -r9 oneshot-import oneshot-import.app
 endif
 
 ifeq ($(OS),Windows)
-	pipenv run pyinstaller --onefile -w -n oneshot-import --hidden-import='PIL._tkinter_finder' --icon logo/icon.ico --distpath=./dist src/main.py
+	pipenv run pyinstaller --onefile -w -n oneshot-import --hidden-import='PIL._tkinter_finder' --icon logo/v1/icon.ico --distpath=./dist src/main.py
 endif
 
 convert-icon: ## Convert icon.svg to .ico and iconset
-	cd logo && ./converter.sh
+	cd logo/v1 && ./converter.sh
