@@ -8,7 +8,7 @@ help:  ## Display this help text
 
 .PHONY: setup
 setup:  ## Setup environment
-	pipenv install
+	pipenv install --dev
 
 .PHONY: start
 start:  ## Start the tool
@@ -22,10 +22,11 @@ endif
 
 ifeq ($(OS),Darwin)
 	pipenv run pyinstaller --onefile -w -n oneshot-import --hidden-import='PIL._tkinter_finder' src/main.py # todo --icon logo/icon.iconset
+	cd ./dist/ && zip -r9 oneshot-import oneshot-import.app
 endif
 
 ifeq ($(OS),Windows)
-	pipenv run pyinstaller --onefile -w -n oneshot-import --hidden-import='PIL._tkinter_finder' --icon logo/icon.ico src/main.py
+	pipenv run pyinstaller --onefile -w -n oneshot-import --hidden-import='PIL._tkinter_finder' --icon logo/icon.ico --distpath=./dist src/main.py
 endif
 
 convert-icon: ## Convert icon.svg to .ico and iconset

@@ -4,8 +4,10 @@ Import images from the past into your [OneShot](https://github.com/ptrLx/OneShot
 
 ## How it works
 
-* download the [latest release](https://github.com/ptrLx/oneshot-import/releases/latest) for your os
-* create a folder `image` in the same folder as the executable
+* follow the [Development instructions](##Development) to run the app
+
+<!-- * download the [latest release](https://github.com/ptrLx/oneshot-import/releases/latest) for your os
+* create a folder `image` in the same folder as the executable -->
 * select images from different dates that you want to import into your OneShot diary and copy them into the `image` folder
 * start the executable
 * it will generate a `import-me.json`

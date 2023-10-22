@@ -10,6 +10,7 @@ python_version = '3.11'
 pillow = "*"
 inquirerpy = "*"
 ttkbootstrap = "*"
+pytk = "*"
 
 [dev-packages]
 pyinstaller = "*"
