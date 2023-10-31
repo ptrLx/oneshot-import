@@ -1,15 +1,16 @@
-from collections import defaultdict
-import os
 import logging
-from datetime import datetime
-from collections import Counter
-from view.ui_f import create_ui
-from util.args import ArgParser
-from service.inserter import inserter_service
-from model.image_entry import ImageEntry
-from service.renamer import renamer_service
-from service.exporter import exporter_service
+import os
+import sys
 import threading
+from collections import Counter, defaultdict
+from datetime import datetime
+
+from model.image_entry import ImageEntry
+from service.exporter import exporter_service
+from service.inserter import inserter_service
+from service.renamer import renamer_service
+from util.args import ArgParser
+from view.ui_f import create_ui
 
 event_names = [
     "stop",
@@ -51,17 +52,17 @@ class Controller:
 
         if not (os.path.exists(folder_path) and os.path.isdir(folder_path)):
             logging.error(f"The folder '{folder_path}' does not exist.")
-            exit(1)
+            sys.exit(1)
 
         if os.path.exists(export_file_location):
             if not os.path.isfile(export_file_location):
                 logging.error(f"'{export_file_location}' is not a file.")
-                exit(1)
+                sys.exit(1)
         else:
             export_path = os.path.dirname(export_file_location) or "."
             if not os.path.exists(export_path):
                 logging.error(f"The folder '{export_path}' does not exist.")
-                exit(1)
+                sys.exit(1)
 
     def init_args(self) -> None:
         self.args.parse()

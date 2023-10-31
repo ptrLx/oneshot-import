@@ -1,13 +1,15 @@
+import os
 import tkinter as tk
 from tkinter import ttk
-import os
+
 import ttkbootstrap as ttk
-from ttkbootstrap.constants import *
 from PIL import Image, ImageTk
-from util.config import disclaimer
-from view.ui import UI
-from util.summarizer import Summarizer
+from ttkbootstrap.constants import *
+
 from controller.controller import Controller
+from util.config import disclaimer
+from util.summarizer import Summarizer
+from view.ui import UI
 
 
 class DisclaimerPage(tk.Frame):
@@ -75,6 +77,7 @@ class ChooseImagePage(tk.Frame):
         # todo fix window size smaller than image list
         for index, image_entry in enumerate(self.images):
             filename_label = tk.Label(self, text=image_entry.file_name)
+
             filename_label.grid(row=0, column=index)
 
             image = Image.open(

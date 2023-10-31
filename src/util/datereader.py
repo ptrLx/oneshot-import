@@ -1,7 +1,8 @@
-from PIL import Image
-from PIL.ExifTags import TAGS, GPSTAGS
-from datetime import datetime
 import re
+from datetime import datetime
+
+from PIL import Image
+from PIL.ExifTags import GPSTAGS, TAGS
 
 
 def __read_metadata(file_path: str) -> datetime:

@@ -2,6 +2,7 @@
     "recommendations": [
         "ms-python.black-formatter",
         "ms-python.python",
+        "ms-python.isort",
         "github.vscode-github-actions",
         "vivaxy.vscode-conventional-commits"
     ]

@@ -1,10 +1,11 @@
 import logging
 import os
-from util.datereader import read_date_and_type
-from model.image_entry import ImageEntry
-from util.config import image_extensions
 from os import listdir
 from os.path import isfile, join
+
+from model.image_entry import ImageEntry
+from util.config import image_extensions
+from util.datereader import read_date_and_type
 
 
 def inserter_service(controller):

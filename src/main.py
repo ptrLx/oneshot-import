@@ -2,7 +2,7 @@
 
 import logging
 import threading
-import asyncio
+
 from controller.controller import Controller
 
 logging.basicConfig(level=logging.INFO)

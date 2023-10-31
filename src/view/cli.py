@@ -1,13 +1,15 @@
-from view.ui import UI
+import itertools
 import os
-from InquirerPy import inquirer
-from datetime import datetime
-from util.config import disclaimer
-from controller.controller import Controller
-from util.summarizer import Summarizer
-
+import sys
 import time
-import itertools, sys
+from datetime import datetime
+
+from InquirerPy import inquirer
+
+from controller.controller import Controller
+from util.config import disclaimer
+from util.summarizer import Summarizer
+from view.ui import UI
 
 _spinner = itertools.cycle(["-", "/", "|", "\\"])
 
@@ -29,7 +31,7 @@ class CLI(UI):
         if not self.__confirm("Start the generation now?"):
             print("❌ Aborted.")
             self.c.set_event("stop")
-            exit(0)
+            sys.exit(0)
 
         # * 2. Read images
         self.c.set_event("insert")
@@ -59,7 +61,7 @@ class CLI(UI):
                     "❌ Images will not be renamed. Skipping generation of the 'import-me.json'."
                 )
                 self.c.set_event("stop")
-                exit(0)
+                sys.exit(0)
 
         self.c.set_event("rename")
 
@@ -79,7 +81,7 @@ class CLI(UI):
             ):
                 print("❌ Skipping generation of the 'import-me.json'.")
                 self.c.set_event("stop")
-                exit(1)
+                sys.exit(1)
 
         self.c.set_event("export")
 
