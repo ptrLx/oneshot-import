@@ -7,7 +7,7 @@ image/*.JPEG
 image-test/
 sample-image/
 import-me.json
-tasks.md
+todo.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
