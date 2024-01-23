@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.1](https://github.com/ptrLx/oneshot-import/compare/v2.1.0...v2.1.1) (2024-01-23)
+
+
+### Bug Fixes
+
+* updated dependencies ([6b2412b](https://github.com/ptrLx/oneshot-import/commit/6b2412b845fe13ce4c23ff0b448b361a95191bdb))
+
+
+### Documentation
+
+* readme ([d776c60](https://github.com/ptrLx/oneshot-import/commit/d776c606f24b49d4c7f8f9e9d1e50f606ef0bbcc))
+* readme ([51d0837](https://github.com/ptrLx/oneshot-import/commit/51d08377f7da9835c9a8fa86b968f585a549a0d8))
+
 ## [2.1.0](https://github.com/ptrLx/oneshot-import/compare/v2.0.0...v2.1.0) (2023-10-21)
 
 
